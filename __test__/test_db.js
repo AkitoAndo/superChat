@@ -1,0 +1,115 @@
+// test_db.js
+// テスト用のデータベース
+"use strict";
+
+module.exports = {
+  users: [
+    {
+      id: 0,
+      name: "admin",
+      password: "password",
+      email: "admin@gmail.com",
+      employee_id: "ee000000",
+      employee_status: 3,
+      updatedAt: new Date(),
+      createdAt: new Date(),
+    },
+    {
+      id: 1,
+      name: "foo",
+      password: "var",
+      email: "foo@gmail.com",
+      employee_id: "ee000001",
+      employee_status: 2,
+      updatedAt: new Date(),
+      createdAt: new Date(),
+    },
+    {
+      id: 2,
+      name: "hoge",
+      password: "hoge",
+      email: "hoge@gmail.com",
+      employee_id: "ee000002",
+      employee_status: 1,
+      updatedAt: new Date(),
+      createdAt: new Date(),
+    },
+    {
+      id: 3,
+      name: "piyo",
+      password: "piyo",
+      email: "piyo@gmail.com",
+      employee_id: "ee000003",
+      employee_status: 0,
+      updatedAt: new Date(),
+      createdAt: new Date(),
+    },
+  ],
+  rooms: [
+    {
+      id: 0,
+      name: "foo",
+      leader_name: "foo",
+      updatedAt: new Date(),
+      createdAt: new Date(),
+    },
+    {
+      id: 1,
+      name: "hoge",
+      leader_name: "hoge",
+      updatedAt: new Date(),
+      createdAt: new Date(),
+    },
+    {
+      id: 2,
+      name: "piyo",
+      leader_name: "foo",
+      updatedAt: new Date(),
+      createdAt: new Date(),
+    },
+  ],
+  userRooms: [
+    {
+      id: 0,
+      user_id: 0,
+      room_id: 0,
+      updatedAt: new Date(),
+      createdAt: new Date(),
+    },
+    {
+      id: 1,
+      user_id: 1,
+      room_id: 0,
+      updatedAt: new Date(),
+      createdAt: new Date(),
+    },
+    {
+      id: 2,
+      user_id: 2,
+      room_id: 0,
+      updatedAt: new Date(),
+      createdAt: new Date(),
+    },
+    {
+      id: 3,
+      user_id: 0,
+      room_id: 1,
+      updatedAt: new Date(),
+      createdAt: new Date(),
+    },
+    {
+      id: 4,
+      user_id: 1,
+      room_id: 1,
+      updatedAt: new Date(),
+      createdAt: new Date(),
+    },
+    {
+      id: 5,
+      user_id: 0,
+      room_id: 2,
+      updatedAt: new Date(),
+      createdAt: new Date(),
+    },
+  ],
+};
