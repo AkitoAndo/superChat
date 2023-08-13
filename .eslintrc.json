@@ -1,0 +1,26 @@
+{
+  "env": {
+    "browser": true,
+    "commonjs": true,
+    "es2021": true,
+    "jest/globals": true,
+    "node": true
+  },
+  "extends": ["standard", "prettier"],
+  "overrides": [
+    {
+      "extends": ["plugin:jest/recommended"],
+      "files": ["__test__/**"],
+      "plugins": ["jest"]
+    }
+  ],
+
+  "parserOptions": {
+    "ecmaVersion": "latest"
+  },
+  "rules": {
+    "no-var": "error",
+    "quotes": ["error", "double"],
+    "semi": ["error", "always"]
+  }
+}

@@ -1,0 +1,12 @@
+{
+  "parser": {
+    "\\.ejs$": "@markuplint/ejs-parser"
+  },
+  "extends": [
+    "markuplint:recommended"
+  ],
+  "rules": {
+    "character-reference": 0,
+    "require-accessible-name": false
+  }
+}

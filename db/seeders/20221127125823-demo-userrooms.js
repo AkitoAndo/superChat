@@ -7,13 +7,6 @@ module.exports = {
       "UserRooms",
       [
         {
-          id: 0,
-          user_id: 0,
-          room_id: 0,
-          updatedAt: new Date(),
-          createdAt: new Date(),
-        },
-        {
           id: 1,
           user_id: 1,
           room_id: 0,

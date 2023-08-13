@@ -10,6 +10,8 @@ const db = {
 
     create: jest.fn(),
 
+    update: jest.fn(),
+
     destroy: jest.fn(),
 
     findAll: jest.fn(),
@@ -24,6 +26,7 @@ const db = {
 
     mockReset: function () {
       this.create.mockReset();
+      this.update.mockReset();
       this.findAll.mockReset();
     },
   },

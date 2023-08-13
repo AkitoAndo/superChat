@@ -16,6 +16,17 @@ afterEach(() => {
 
 describe("addUser", () => {
   it("addUserでユーザを追加", async () => {
+    User.create.mockResolvedValue({
+      id: 99,
+      name: "foo",
+      password: "bar",
+      email: "bazz@example.com",
+      employee_id: "ee385017",
+      employee_status: 0,
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    });
+
     // 追加するデータ
     const user = {
       name: "foo",
@@ -133,6 +144,388 @@ describe("isAdmin", () => {
 
   it("userIdが不正な値", async () => {
     expect(await usersModel.isAdmin(null)).toBe(false);
+  });
+});
+
+describe("updateUser", () => {
+  it("nameを更新する", async () => {
+    // 情報を更新したいユーザのID
+    const userId = 2023;
+    // 新しいname
+    const newName = "someone";
+    // 更新するリクエストを作成
+    const req = {
+      params: {
+        user_id: userId,
+      },
+      body: {
+        new_name: newName,
+        update_button: "update_name",
+      },
+    };
+
+    const resMock = {
+      redirect: jest.fn(),
+    };
+
+    await usersModel.updateUser(req, resMock);
+
+    // User.updateが1回だけ呼ばれていて
+    // その引数の1つ目が { name: newName }で、
+    // 2つ目のオブジェクトのwhereプロパティに{ id: userId }を含むオブジェクトが入っていれば成功
+    expect(User.update.mock.calls).toHaveLength(1);
+    expect(User.update.mock.calls[0].length).toBeGreaterThan(1);
+    expect(User.update.mock.calls[0][0]).toStrictEqual({ name: newName });
+    expect(User.update.mock.calls[0][1]).toHaveProperty("where");
+    expect(User.update.mock.calls[0][1].where).toMatchObject({
+      user_id: userId,
+    });
+
+    // resMock.redirectが1回だけ呼ばれていて、
+    // その引数が"/index/read_users"になっていれば成功
+    expect(resMock.redirect.mock.calls).toHaveLength(1);
+    expect(resMock.redirect.mock.calls[0][0]).toBe("/index/read_users");
+  });
+
+  it("新しいnameが空白のみ", async () => {
+    // 情報を更新したいユーザのID
+    const userId = 2024;
+    // 新しいname
+    const newName = "    ";
+    // 更新するリクエストを作成
+    const req = {
+      params: {
+        user_id: userId,
+      },
+      body: {
+        new_name: newName,
+        update_button: "update_name",
+      },
+    };
+
+    const resMock = {
+      redirect: jest.fn(),
+    };
+
+    await usersModel.updateUser(req, resMock);
+
+    // User.updateは呼ばれないはず
+    expect(User.update.mock.calls).toHaveLength(0);
+
+    // resMock.redirectが1回だけ呼ばれていて、
+    // その引数が"/index/read_users"になっていれば成功
+    expect(resMock.redirect.mock.calls).toHaveLength(1);
+    expect(resMock.redirect.mock.calls[0][0]).toBe(
+      `/index/read_users/update_user/${userId}`
+    );
+  });
+
+  it("passwordを更新する", async () => {
+    // 情報を更新したいユーザのID
+    const userId = 2023;
+    // 新しいpassword
+    const newPass1 = "new-pass";
+    // 確認用
+    const newPass2 = newPass1;
+    // 更新するリクエストを作成
+    const req = {
+      params: {
+        user_id: userId,
+      },
+      body: {
+        new_pass1: newPass1,
+        new_pass2: newPass2,
+        update_button: "update_password",
+      },
+    };
+
+    const resMock = {
+      redirect: jest.fn(),
+    };
+
+    await usersModel.updateUser(req, resMock);
+
+    // User.updateが1回だけ呼ばれていて
+    // その引数の1つ目が { password: newPass1 }で、
+    // 2つ目のオブジェクトのwhereプロパティに{ id: userId }を含むオブジェクトが入っていれば成功
+    expect(User.update.mock.calls).toHaveLength(1);
+    expect(User.update.mock.calls[0].length).toBeGreaterThan(1);
+    expect(User.update.mock.calls[0][0]).toStrictEqual({ password: newPass1 });
+    expect(User.update.mock.calls[0][1]).toHaveProperty("where");
+    expect(User.update.mock.calls[0][1].where).toMatchObject({
+      user_id: userId,
+    });
+
+    // resMock.redirectが1回だけ呼ばれていて、
+    // その引数が"/index/read_users"になっていれば成功
+    expect(resMock.redirect.mock.calls).toHaveLength(1);
+    expect(resMock.redirect.mock.calls[0][0]).toBe("/index/read_users");
+  });
+
+  it("新しいpasswordが空白のみ", async () => {
+    // 情報を更新したいユーザのID
+    const userId = 2023;
+    // 新しいpassword
+    const newPass1 = "    ";
+    // 確認用
+    const newPass2 = newPass1;
+    // 更新するリクエストを作成
+    const req = {
+      params: {
+        user_id: userId,
+      },
+      body: {
+        new_pass1: newPass1,
+        new_pass2: newPass2,
+        update_button: "update_password",
+      },
+    };
+
+    const resMock = {
+      redirect: jest.fn(),
+    };
+
+    await usersModel.updateUser(req, resMock);
+
+    // User.updateは呼ばれないはず
+    expect(User.update.mock.calls).toHaveLength(0);
+
+    // resMock.redirectが1回だけ呼ばれていて、
+    // その引数が"/index/read_users"になっていれば成功
+    expect(resMock.redirect.mock.calls).toHaveLength(1);
+    expect(resMock.redirect.mock.calls[0][0]).toBe(
+      `/index/read_users/update_user/${userId}`
+    );
+  });
+
+  it("新しいpasswordと確認用が不一致", async () => {
+    // 情報を更新したいユーザのID
+    const userId = 2023;
+    // 新しいpassword
+    const newPass1 = "new-pass";
+    // 確認用
+    const newPass2 = "old-pass";
+    // 更新するリクエストを作成
+    const req = {
+      params: {
+        user_id: userId,
+      },
+      body: {
+        new_pass1: newPass1,
+        new_pass2: newPass2,
+        update_button: "update_password",
+      },
+    };
+
+    const resMock = {
+      redirect: jest.fn(),
+    };
+
+    await usersModel.updateUser(req, resMock);
+
+    // User.updateは呼ばれないはず
+    expect(User.update.mock.calls).toHaveLength(0);
+
+    // resMock.redirectが1回だけ呼ばれていて、
+    // その引数が"/index/read_users"になっていれば成功
+    expect(resMock.redirect.mock.calls).toHaveLength(1);
+    expect(resMock.redirect.mock.calls[0][0]).toBe(
+      `/index/read_users/update_user/${userId}`
+    );
+  });
+
+  it("statusを0に更新する", async () => {
+    // 情報を更新したいユーザのID
+    const userId = 2023;
+    // 新しいpassword
+    const newStatusString = "0";
+    const newStatus = parseInt(newStatusString, 10);
+    // 更新するリクエストを作成
+    const req = {
+      params: {
+        user_id: userId,
+      },
+      body: {
+        new_status: newStatusString,
+        update_button: "update_status",
+      },
+    };
+
+    const resMock = {
+      redirect: jest.fn(),
+    };
+
+    await usersModel.updateUser(req, resMock);
+
+    // User.updateが1回だけ呼ばれていて
+    // その引数の1つ目が { employee_status: newStatus }で、
+    // 2つ目のオブジェクトのwhereプロパティに{ id: userId }を含むオブジェクトが入っていれば成功
+    expect(User.update.mock.calls).toHaveLength(1);
+    expect(User.update.mock.calls[0].length).toBeGreaterThan(1);
+    expect(User.update.mock.calls[0][0]).toStrictEqual({
+      employee_status: newStatus,
+    });
+    expect(User.update.mock.calls[0][1]).toHaveProperty("where");
+    expect(User.update.mock.calls[0][1].where).toMatchObject({
+      user_id: userId,
+    });
+
+    // resMock.redirectが1回だけ呼ばれていて、
+    // その引数が"/index/read_users"になっていれば成功
+    expect(resMock.redirect.mock.calls).toHaveLength(1);
+    expect(resMock.redirect.mock.calls[0][0]).toBe("/index/read_users");
+  });
+
+  it("statusを1に更新する", async () => {
+    // 情報を更新したいユーザのID
+    const userId = 2023;
+    // 新しいpassword
+    const newStatusString = "1";
+    const newStatus = parseInt(newStatusString, 10);
+    // 更新するリクエストを作成
+    const req = {
+      params: {
+        user_id: userId,
+      },
+      body: {
+        new_status: newStatusString,
+        update_button: "update_status",
+      },
+    };
+
+    const resMock = {
+      redirect: jest.fn(),
+    };
+
+    await usersModel.updateUser(req, resMock);
+
+    // User.updateが1回だけ呼ばれていて
+    // その引数の1つ目が { employee_status: newStatus }で、
+    // 2つ目のオブジェクトのwhereプロパティに{ id: userId }を含むオブジェクトが入っていれば成功
+    expect(User.update.mock.calls).toHaveLength(1);
+    expect(User.update.mock.calls[0].length).toBeGreaterThan(1);
+    expect(User.update.mock.calls[0][0]).toStrictEqual({
+      employee_status: newStatus,
+    });
+    expect(User.update.mock.calls[0][1]).toHaveProperty("where");
+    expect(User.update.mock.calls[0][1].where).toMatchObject({
+      user_id: userId,
+    });
+
+    // resMock.redirectが1回だけ呼ばれていて、
+    // その引数が"/index/read_users"になっていれば成功
+    expect(resMock.redirect.mock.calls).toHaveLength(1);
+    expect(resMock.redirect.mock.calls[0][0]).toBe("/index/read_users");
+  });
+
+  it("statusを2に更新する", async () => {
+    // 情報を更新したいユーザのID
+    const userId = 2023;
+    // 新しいpassword
+    const newStatusString = "2";
+    const newStatus = parseInt(newStatusString, 10);
+    // 更新するリクエストを作成
+    const req = {
+      params: {
+        user_id: userId,
+      },
+      body: {
+        new_status: newStatusString,
+        update_button: "update_status",
+      },
+    };
+
+    const resMock = {
+      redirect: jest.fn(),
+    };
+
+    await usersModel.updateUser(req, resMock);
+
+    // User.updateが1回だけ呼ばれていて
+    // その引数の1つ目が { employee_status: newStatus }で、
+    // 2つ目のオブジェクトのwhereプロパティに{ id: userId }を含むオブジェクトが入っていれば成功
+    expect(User.update.mock.calls).toHaveLength(1);
+    expect(User.update.mock.calls[0].length).toBeGreaterThan(1);
+    expect(User.update.mock.calls[0][0]).toStrictEqual({
+      employee_status: newStatus,
+    });
+    expect(User.update.mock.calls[0][1]).toHaveProperty("where");
+    expect(User.update.mock.calls[0][1].where).toMatchObject({
+      user_id: userId,
+    });
+
+    // resMock.redirectが1回だけ呼ばれていて、
+    // その引数が"/index/read_users"になっていれば成功
+    expect(resMock.redirect.mock.calls).toHaveLength(1);
+    expect(resMock.redirect.mock.calls[0][0]).toBe("/index/read_users");
+  });
+
+  it("誤ったstatus(3)に更新させようとする", async () => {
+    // 情報を更新したいユーザのID
+    const userId = 2023;
+    // 新しいpassword
+    const newStatusString = "3";
+    const newStatus = parseInt(newStatusString, 10);
+    // 更新するリクエストを作成
+    const req = {
+      params: {
+        user_id: userId,
+      },
+      body: {
+        new_status: newStatusString,
+        update_button: "update_status",
+      },
+    };
+
+    const resMock = {
+      redirect: jest.fn(),
+    };
+
+    await usersModel.updateUser(req, resMock);
+
+    // User.updateは呼ばれないはず
+    expect(User.update.mock.calls).toHaveLength(0);
+
+    // resMock.redirectが1回だけ呼ばれていて、
+    // その引数が"/index/read_users"になっていれば成功
+    expect(resMock.redirect.mock.calls).toHaveLength(1);
+    expect(resMock.redirect.mock.calls[0][0]).toBe(
+      `/index/read_users/update_user/${userId}`
+    );
+  });
+
+  it("誤ったstatus(nan)に更新させようとする", async () => {
+    // 情報を更新したいユーザのID
+    const userId = 2023;
+    // 新しいpassword
+    const newStatusString = "not-a-number";
+    const newStatus = parseInt(newStatusString, 10);
+    // 更新するリクエストを作成
+    const req = {
+      params: {
+        user_id: userId,
+      },
+      body: {
+        new_status: newStatusString,
+        update_button: "update_status",
+      },
+    };
+
+    const resMock = {
+      redirect: jest.fn(),
+    };
+
+    await usersModel.updateUser(req, resMock);
+
+    // User.updateは呼ばれないはず
+    expect(User.update.mock.calls).toHaveLength(0);
+
+    // resMock.redirectが1回だけ呼ばれていて、
+    // その引数が"/index/read_users"になっていれば成功
+    expect(resMock.redirect.mock.calls).toHaveLength(1);
+    expect(resMock.redirect.mock.calls[0][0]).toBe(
+      `/index/read_users/update_user/${userId}`
+    );
   });
 });
 

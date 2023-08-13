@@ -7,21 +7,21 @@ module.exports = {
       "Rooms",
       [
         {
-          id: 0,
+          id: 1,
           name: "foo",
           leader_name: "foo",
           updatedAt: new Date(),
           createdAt: new Date(),
         },
         {
-          id: 1,
+          id: 2,
           name: "hoge",
           leader_name: "hoge",
           updatedAt: new Date(),
           createdAt: new Date(),
         },
         {
-          id: 2,
+          id: 3,
           name: "piyo",
           leader_name: "foo",
           updatedAt: new Date(),
